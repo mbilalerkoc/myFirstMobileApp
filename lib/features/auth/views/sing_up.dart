@@ -1,19 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:myfirstapp/features/auth/contorller/auth_controller.dart';
-import 'package:myfirstapp/features/auth/views/sing_up.dart';
-import 'package:myfirstapp/features/home/views/home.dart';
 
 import '../../../common/colors.dart';
 
-class SignIn extends StatefulWidget {
-  const SignIn({super.key});
+class SignUp extends StatefulWidget {
+  const SignUp({super.key});
 
   @override
-  State<SignIn> createState() => _SignInState();
+  State<SignUp> createState() => _SignUpState();
 }
 
-class _SignInState extends State<SignIn> {
+class _SignUpState extends State<SignUp> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
@@ -35,7 +33,7 @@ class _SignInState extends State<SignIn> {
             width: double.infinity,
             decoration: const BoxDecoration(
               image: DecorationImage(
-                image: AssetImage("assets/images/sign_in.jpg"),
+                image: AssetImage("assets/images/sign_up.jpg"),
                 fit: BoxFit.cover,
               ),
             ),
@@ -63,7 +61,7 @@ class _SignInState extends State<SignIn> {
                         padding: const EdgeInsets.symmetric(vertical: 10),
                         alignment: Alignment.centerLeft,
                         child: Text(
-                          "Sign In",
+                          "Sign Up",
                           style: TextStyle(
                             color: TitleColor,
                             fontSize: 24,
@@ -121,21 +119,11 @@ class _SignInState extends State<SignIn> {
                             padding: const EdgeInsets.symmetric(vertical: 5),
                             child: MaterialButton(
                               onPressed: () {
-                                if (_formKey.currentState!.validate()) { // form validasyonu yapar
-                                  ref
-                                      .read(authControllerProvider)
-                                      .signInWithEmailAndPassword(
-                                        email: _emailController.text,
-                                        password: _passwordController.text,
-                                      )
-                                      .then(
-                                        (value) => Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) => const Home(),// sign in islemi yapildiktan sonra home ekranina git
-                                          ),
-                                        ),
-                                      );
+                                if (_formKey.currentState!.validate()) {
+                                  ref.read(authControllerProvider).signUpWithEmailAndPassword(
+                                    email: _emailController.text,
+                                    password: _passwordController.text,
+                                  ).then((value) => Navigator.pop(context)); // sign up islemi yapildiktan sonra sign in ekranina don
                                 }
                                 // sign in butonuna basildiginda email ve passwordu al ve sign in islemi yap
                               },
@@ -150,7 +138,7 @@ class _SignInState extends State<SignIn> {
                                   vertical: 12,
                                 ),
                                 child: const Text(
-                                  "Sign In",
+                                  "Sign Up",
                                   style: TextStyle(
                                     color: ContainerColor,
                                     fontSize: 16,
@@ -166,28 +154,13 @@ class _SignInState extends State<SignIn> {
                         // sign up butonu
                         alignment: Alignment.centerLeft,
                         padding: const EdgeInsets.symmetric(vertical: 10),
-                        child: InkWell(
-                          onTap: () {},
-                          child: const Text(
-                            "Forgot Password?",
-                            style: TextStyle(
-                              color: TextButtonTextColor,
-                              fontSize: 14,
-                            ),
-                          ),
-                        ),
-                      ),
-                      Container(
-                        // sign up butonu
-                        alignment: Alignment.centerLeft,
-                        padding: const EdgeInsets.symmetric(vertical: 10),
                         child: Row(
                           // sign up butonu icindeki yazilarin yan yana durmasi icin row kullandik
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             const Text(
                               // buton değil
-                              "Don't have an account? ",
+                              "Do you have an account? ",
                               style: TextStyle(
                                 color: TextButtonTextColor,
                                 fontSize: 14,
@@ -195,16 +168,11 @@ class _SignInState extends State<SignIn> {
                             ),
                             InkWell(
                               // buton gibi davranan text
-                              onTap: () => Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => const SignUp(),
-                                ),
-                              ),
+                              onTap: () {},
                               child: const Text(
-                                "Sign Up",
+                                "Sign In",
                                 style: TextStyle(
-                                  color: TextButtonTextColor,
+                                  color: TitleColor,
                                   fontSize: 14,
                                   fontWeight: FontWeight.bold,
                                 ),

@@ -142,7 +142,7 @@ class _SignInState extends State<SignIn> {
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10),
                               ),
-                              color: ButtonColor,
+                              color: signInButtonColor,
                               minWidth: double.infinity, // butonun genisligi
                               child: Padding(
                                 // butonun icindeki yazinin paddingi

@@ -1,25 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:myfirstapp/features/auth/contorller/auth_controller.dart';
-import 'package:myfirstapp/features/auth/views/sing_up_info.dart';
+import 'package:myfirstapp/features/home/views/home.dart';
+import 'package:myfirstapp/models/user_model.dart';
 
 import '../../../common/colors.dart';
 
-class SignUp extends StatefulWidget {
-  const SignUp({super.key});
+class SignUpInfo extends StatefulWidget {
+  const SignUpInfo({super.key, required this.email});
+  final String email;
 
   @override
-  State<SignUp> createState() => _SignUpState();
+  State<SignUpInfo> createState() => _SignUpInfoState();
 }
 
-class _SignUpState extends State<SignUp> {
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
+class _SignUpInfoState extends State<SignUpInfo> {
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _surnameController = TextEditingController();
+  final TextEditingController _usernameController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   @override
   void dispose() {
-    _emailController.dispose();
-    _passwordController.dispose();
+    _nameController.dispose();
+    _surnameController.dispose();
+    _usernameController.dispose();
     super.dispose();
   }
 
@@ -74,16 +78,16 @@ class _SignUpState extends State<SignUp> {
                         // email textformfield
                         padding: const EdgeInsets.symmetric(vertical: 5),
                         child: TextFormField(
-                          controller: _emailController,
+                          controller: _nameController,
                           validator: (value) {
-                            // email alanının boş olup olmadığını kontrol eder
+                            // name alanının boş olup olmadığını kontrol eder
                             if (value == null || value.isEmpty) {
-                              return "Email is required";
+                              return "Name is required";
                             }
                             return null;
                           },
                           decoration: InputDecoration(
-                            labelText: "Email",
+                            labelText: "Name",
                             border: OutlineInputBorder(
                               borderSide: BorderSide(color: BorderColor),
                               borderRadius: BorderRadius.circular(10),
@@ -95,17 +99,37 @@ class _SignUpState extends State<SignUp> {
                         // password textformfield
                         padding: const EdgeInsets.symmetric(vertical: 5),
                         child: TextFormField(
-                          controller: _passwordController,
-                          obscureText: true, 
+                          controller: _surnameController,
                           validator: (value) {
-                            // password alanının boş olup olmadığını kontrol eder
+                            // surname alanının boş olup olmadığını kontrol eder
                             if (value == null || value.isEmpty) {
-                              return "Password is required";
+                              return "Surname is required";
                             }
                             return null;
                           },
                           decoration: InputDecoration(
-                            labelText: "Password",
+                            labelText: "Surname",
+                            border: OutlineInputBorder(
+                              borderSide: BorderSide(color: BorderColor),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        // password textformfield
+                        padding: const EdgeInsets.symmetric(vertical: 5),
+                        child: TextFormField(
+                          controller: _usernameController,
+                          validator: (value) {
+                            // username alanının boş olup olmadığını kontrol eder
+                            if (value == null || value.isEmpty) {
+                              return "Username is required";
+                            }
+                            return null;
+                          },
+                          decoration: InputDecoration(
+                            labelText: "Username",
                             border: OutlineInputBorder(
                               borderSide: BorderSide(color: BorderColor),
                               borderRadius: BorderRadius.circular(10),
@@ -121,24 +145,33 @@ class _SignUpState extends State<SignUp> {
                             child: MaterialButton(
                               onPressed: () async {
                                 if (_formKey.currentState!.validate()) {
-                                  // 1. Firebase/Auth işlemini bekle (await)
-                                  await ref
-                                      .read(authControllerProvider)
-                                      .signUpWithEmailAndPassword(
-                                        email: _emailController.text,
-                                        password: _passwordController.text,
-                                      );
+                                  try {
+                                    // 1. Modeli oluştur
+                                    UserModel userModel = UserModel(
+                                      name: _nameController.text,
+                                      surname: _surnameController.text,
+                                      username: _usernameController.text,
+                                      email: widget.email,
+                                    );
 
-                                  // 2. İşlem bittikten sonra sayfa hala açık mı kontrol et (Çok önemli!)
-                                  if (!context.mounted) return;
+                                    // 2. Firebase'e kaydetme işlemini bekle (await)
+                                    await ref
+                                        .read(authControllerProvider)
+                                        .storeUserInfoToFirebase(userModel);
 
-                                  // 3. Geçmişi tamamen silmek yerine sadece mevcut kayıt sayfasını Info sayfasıyla değiştir
-                                  Navigator.pushReplacement(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => SignUpInfo(email: _emailController.text),
-                                    ),
-                                  );
+                                    // 3. İşlem başarılı olursa sayfayı değiştir
+                                    if (!context.mounted) return;
+                                    Navigator.pushAndRemoveUntil(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => const Home(),
+                                      ),
+                                      (route) => false,
+                                    );
+                                  } catch (e) {
+                                    // 4. EĞER HATA VARSA BURAYA DÜŞECEK!
+                                    print("FIRESTORE KAYIT HATASI: $e");
+                                  }
                                 }
                               },
                               shape: RoundedRectangleBorder(
@@ -152,7 +185,7 @@ class _SignUpState extends State<SignUp> {
                                   vertical: 12,
                                 ),
                                 child: const Text(
-                                  "Continue",
+                                  "Sign Up",
                                   style: TextStyle(
                                     color: ContainerColor,
                                     fontSize: 16,
@@ -163,37 +196,6 @@ class _SignUpState extends State<SignUp> {
                             ),
                           );
                         },
-                      ),
-                      Container(
-                        // sign up butonu
-                        alignment: Alignment.centerLeft,
-                        padding: const EdgeInsets.symmetric(vertical: 10),
-                        child: Row(
-                          // sign up butonu icindeki yazilarin yan yana durmasi icin row kullandik
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            const Text(
-                              // buton değil
-                              "Do you have an account? ",
-                              style: TextStyle(
-                                color: TextButtonTextColor,
-                                fontSize: 14,
-                              ),
-                            ),
-                            InkWell(
-                              // buton gibi davranan text
-                              onTap: () {},
-                              child: const Text(
-                                "Sign In",
-                                style: TextStyle(
-                                  color: TitleColor,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
                       ),
                     ],
                   ),

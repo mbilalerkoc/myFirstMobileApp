@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:myfirstapp/models/user_model.dart';
 
 import '../repository/auth_repository.dart';
 
@@ -29,5 +30,13 @@ class AuthController {
       email: email,
       password: password,
     );
+  }
+
+  Future<void> signOut() async {
+    return authRepository.signOut();
+  }
+
+  Future<void> storeUserInfoToFirebase(UserModel userModel) async {
+    return authRepository.storeUserInfoToFirebase(userModel);
   }
 }

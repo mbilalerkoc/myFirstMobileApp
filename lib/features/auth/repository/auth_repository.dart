@@ -38,7 +38,7 @@ class AuthRepository {
   Future<void> storeUserInfoToFirebase(UserModel userModel) async {
     // Firestore'a kullanıcı bilgilerini kaydetme işlemi burada yapılır
     if (userModel.profilePhoto == null) {
-      userModel = userModel.copyWith(profilePhoto: "https://www.pngall.com/wp-content/uploads/5/Profile-PNG-High-Quality-Image.png");
+      userModel = userModel.copyWith(profilePhoto: "https://avatars.githubusercontent.com/u/9919?v=4");
     }
 
     userModel.uid = auth.currentUser!.uid; // kullanıcı id'si auth.currentUser!.uid ile alınır

@@ -5,6 +5,7 @@ import 'package:myfirstapp/features/home/views/home.dart';
 import 'package:myfirstapp/models/user_model.dart';
 
 import '../../../common/colors.dart';
+import '../../../common/path.dart';
 
 class SignUpInfo extends StatefulWidget {
   const SignUpInfo({super.key, required this.email});
@@ -38,7 +39,7 @@ class _SignUpInfoState extends State<SignUpInfo> {
             width: double.infinity,
             decoration: const BoxDecoration(
               image: DecorationImage(
-                image: AssetImage("assets/images/sign_up.jpg"),
+                image: AssetImage(signUpImage),
                 fit: BoxFit.cover,
               ),
             ),

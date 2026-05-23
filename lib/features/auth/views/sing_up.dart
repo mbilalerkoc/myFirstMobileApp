@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:myfirstapp/common/path.dart';
 import 'package:myfirstapp/features/auth/contorller/auth_controller.dart';
 import 'package:myfirstapp/features/auth/views/sing_up_info.dart';
 
@@ -34,7 +35,7 @@ class _SignUpState extends State<SignUp> {
             width: double.infinity,
             decoration: const BoxDecoration(
               image: DecorationImage(
-                image: AssetImage("assets/images/sign_up.jpg"),
+                image: AssetImage(signUpImage),
                 fit: BoxFit.cover,
               ),
             ),

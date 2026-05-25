@@ -18,42 +18,82 @@ class Profile extends ConsumerWidget {
           child: FutureBuilder<UserModel>(
             future: ref.read(profileControllerProvider).getUser(),
             builder: (context, snapshot) {
-              
               // 1. Durum: Yükleniyor
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(child: CircularProgressIndicator());
-              } 
-              
+              }
               // 2. Durum: Hata Var
               else if (snapshot.hasError) {
                 return Center(child: Text("Hata: ${snapshot.error}"));
-              } 
-              
+              }
               // 3. Durum: Veri Başarıyla Geldi
               else if (snapshot.hasData) {
                 final userModel = snapshot.data!;
-                return Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    CircleAvatar(
-                      backgroundColor: profilePhotoCircleColor,
-                      radius: 50,
-                      child: CircleAvatar(
-                        backgroundColor: profilePhotoCircleColor,
-                        radius: 48,
-                        backgroundImage: CachedNetworkImageProvider(
-                          userModel.profilePhoto!,
+                return Align(
+                  alignment: Alignment.center,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Padding(
+                        padding: vertical10,
+                        child: CircleAvatar(
+                          backgroundColor: profilePhotoCircleColor,
+                          radius: 50,
+                          child: CircleAvatar(
+                            backgroundColor: profilePhotoCircleColor,
+                            radius: 48,
+                            backgroundImage: CachedNetworkImageProvider(
+                              userModel.profilePhoto!,
+                            ),
+                          ),
                         ),
                       ),
-                    ),
-                  ],
+                      Padding(
+                        padding: vertical10,
+                        child: Text(
+                          "@${userModel.username}",
+                          style: const TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: TitleColor,
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: vertical10,
+                        child: Text(
+                          "${userModel.name} ${userModel.surname}",
+                          style: const TextStyle(
+                            fontSize: 20,
+                            color: TitleColor,
+                          ),
+                        ),
+                      ),
+                      MaterialButton(
+                        color: profilePhotoCircleColor,
+                        onPressed: () {},
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(4),
+                          side: const BorderSide(color: BorderColor),
+                        ),
+                        minWidth: 200,
+                        child: const Padding(
+                          padding: vertical10,
+                          child: Text(
+                            "Edit Profile",
+                            style: TextStyle(color: ContainerColor),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 );
               }
 
               // 4. Durum: Derleyicinin "null döner" hatasını önleyen GÜVENLİK SİBOBU!
               // Eğer yukarıdaki if'lerin hiçbirine girmezse, ekrana boş bir kutu çiz.
-              return const SizedBox(); 
+              return const SizedBox();
             },
           ),
         ),

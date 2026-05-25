@@ -8,3 +8,8 @@ const continueButtonColor = Color(0xFF485796);
 const TextButtonTextColor = Color(0xFF989898);
 
 const profilePhotoCircleColor = Color(0xFFF09E54);
+const whiteColor = Color(0xFFFFFFFF);
+
+
+///////more/////////////
+const activeColor = Color.fromARGB(255, 178, 9, 9);
